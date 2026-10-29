@@ -1,0 +1,84 @@
+:root {
+  /* Brand Palette */
+  --primary: #1E5F8C;
+  --primary-dark: #154566;
+  --primary-light: #EBF3F8;
+  --primary-rgb: 30, 95, 140;
+
+  --accent: #2EC4B6;
+  --accent-dark: #229B90;
+  --accent-light: #E6FAF8;
+  --accent-rgb: 46, 196, 182;
+
+  /* Neutrals & Surfaces */
+  --bg-app: #F8FAFC;
+  --bg-surface: #FFFFFF;
+  --bg-subtle: #F1F5F9;
+  --border-light: #E2E8F0;
+  --border-focus: #1E5F8C;
+
+  /* Typography */
+  --text-main: #1A2530;
+  --text-muted: #64748B;
+  --text-light: #94A3B8;
+  --text-inverse: #FFFFFF;
+
+  /* Clinical Urgency Severity */
+  --urgency-emergency: #E63946;
+  --urgency-emergency-bg: #FEECEE;
+  --urgency-high: #E76F51;
+  --urgency-high-bg: #FEF0EC;
+  --urgency-moderate: #E9C46A;
+  --urgency-moderate-bg: #FEF9EB;
+  --urgency-low: #2A9D8F;
+  --urgency-low-bg: #EAF6F4;
+
+  /* Elevation Shadows */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 14px -2px rgba(30, 95, 140, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 12px 28px -4px rgba(30, 95, 140, 0.12), 0 4px 12px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 40px -6px rgba(30, 95, 140, 0.16);
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseEmergency {
+  0% {
+    box-shadow: 0 0 0 0 rgba(230, 57, 70, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(230, 57, 70, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(230, 57, 70, 0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}

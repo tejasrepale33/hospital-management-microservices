@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Management Microservices - Full Project Presentation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1e293b;
+            --border-color: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --teal: #0d9488;
+            --teal-light: #14b8a6;
+            --blue: #3b82f6;
+            --purple: #a855f7;
+            --rose: #e11d48;
+            --amber: #f59e0b;
+            --green: #22c55e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Top Navigation Bar */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            background: rgba(30, 41, 59, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: var(--text-main);
+        }
+
+        .logo-icon {
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, var(--teal), var(--blue));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .slide-nav {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            border-color: var(--teal);
+            color: var(--teal-light);
+            background: rgba(13, 148, 136, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--teal), #0f766e);
+            border: none;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--teal-light), var(--teal));
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        /* Slide Container */
+        .stage {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            perspective: 1000px;
+        }
+
+        .slide {
+            display: none;
+            width: 100%;
+            max-width: 1200px;
+            min-height: 650px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-tag {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--teal-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .slide-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, #ffffff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .slide-divider {
+            height: 3px;
+            width: 60px;
+            background: var(--teal);
+            margin-bottom: 2rem;
+            border-radius: 2px;
+        }
+
+        /* Card Grid Layouts */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.2rem;
+        }
+
+        .card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .card:hover {
+            border-color: var(--teal);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .card-body {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text-muted);
+        }
+
+        .card-body strong {
+            color: var(--text-main);
+        }
+
+        .card-body ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .card-body li {
+            margin-bottom: 0.75rem;
+            position: relative;
+            padding-left: 1.4rem;
+        }
+
+        .card-body li::before {
+            content: "▹";
+            position: absolute;
+            left: 0;
+            color: var(--teal);
+            font-weight: bold;
+        }
+
+        /* Architecture Topology Box */
+        .topology-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .topo-box {
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1rem 1.5rem;
+            text-align: center;
+            width: 100%;
+        }
+
+        .topo-box.highlight {
+            border-color: var(--blue);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+        }
+
+        .topo-box.teal {
+            border-color: var(--teal);
+            box-shadow: 0 0 20px rgba(13, 148, 136, 0.2);
+        }
+
+        .topo-box.purple {
+            border-color: var(--purple);
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.6rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-right: 0.4rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .badge-teal { background: rgba(13, 148, 136, 0.2); color: var(--teal-light); border: 1px solid var(--teal); }
+        .badge-blue { background: rgba(59, 130, 246, 0.2); color: #93c5fd; border: 1px solid var(--blue); }
+        .badge-purple { background: rgba(168, 85, 247, 0.2); color: #d8b4fe; border: 1px solid var(--purple); }
+        .badge-amber { background: rgba(245, 158, 11, 0.2); color: #fcd34d; border: 1px solid var(--amber); }
+
+        /* Code block */
+        pre {
+            background: #090d16;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: #38bdf8;
+            line-height: 1.5;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background: #0f172a;
+            color: var(--teal-light);
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
+        }
+
+        tr:hover td {
+            background: rgba(15, 23, 42, 0.4);
+        }
+
+        .status-pass {
+            color: var(--green);
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        /* Footer Slide Indicator */
+        footer {
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-primary);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <div class="logo-icon">✚</div>
+            <div>
+                <div>Hospital Management Microservices</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 400;">Spring Boot 3 • Spring AI • Redis • JWT • Gateway</div>
+            </div>
+        </div>
+        <div class="slide-nav">
+            <button class="btn" onclick="prevSlide()">◀ Previous</button>
+            <span id="slide-counter" style="font-size: 0.9rem; font-weight: 600; color: var(--text-muted);">Slide 1 / 16</span>
+            <button class="btn" onclick="nextSlide()">Next ▶</button>
+            <a href="hospital_microservices_presentation.pptx" download class="btn btn-primary">
+                📥 Download PPTX
+            </a>
+        </div>
+    </header>
+
+    <div class="stage">
+
+        <!-- SLIDE 1: Cover -->
+        <div class="slide active">
+            <div class="slide-tag">Production Architecture & Implementation</div>
+            <h1 class="slide-title" style="font-size: 2.8rem;">Hospital Management<br>Microservices Ecosystem</h1>
+            <div class="slide-divider"></div>
+            <p style="font-size: 1.15rem; color: var(--text-muted); max-width: 800px; margin-bottom: 2rem; line-height: 1.6;">
+                An enterprise-grade, distributed healthcare management platform engineered with Spring Boot 3.2, 
+                Spring Cloud API Gateway, Netflix Eureka Load Balancing, Spring Security JWT, 
+                Spring AI Symptom Triage, Redis Multi-Tier Caching, PostgreSQL Dual-DB, and full Dockerization.
+            </p>
+            <div style="margin-bottom: 2rem;">
+                <span class="badge badge-teal">Spring Boot 3.2.5</span>
+                <span class="badge badge-blue">Spring Cloud Gateway</span>
+                <span class="badge badge-purple">Spring AI Triage</span>
+                <span class="badge badge-amber">Spring JWT (JJWT)</span>
+                <span class="badge badge-teal">Redis Caching</span>
+                <span class="badge badge-blue">PostgreSQL 15</span>
+                <span class="badge badge-purple">Netflix Eureka</span>
+                <span class="badge badge-amber">Docker & Compose</span>
+                <span class="badge badge-teal">Eclipse / STS Ready</span>
+            </div>
+            <div class="card" style="display: inline-flex; align-items: center; gap: 2rem; padding: 1rem 1.5rem;">
+                <div><strong>Databases:</strong> postgres / root (patient_db, doctor_db)</div>
+                <div style="color: var(--border-color);">|</div>
+                <div><strong>IDE:</strong> Eclipse & STS Ready (Native .project / .classpath)</div>
+                <div style="color: var(--border-color);">|</div>
+                <div><strong>Port:</strong> Gateway: 8080 | Eureka: 8761</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: Objectives -->
+        <div class="slide">
+            <div class="slide-tag">Problem Statement & Objectives</div>
+            <h2 class="slide-title">Engineering Goals & System Highlights</h2>
+            <div class="slide-divider"></div>
+            <div class="grid-3">
+                <div class="card">
+                    <div class="card-header" style="color: var(--rose);">Challenges in Monoliths</div>
+                    <div class="card-body">
+                        <ul>
+                            <li><strong>Single Point of Failure:</strong> Outages in scheduling halt patient intakes.</li>
+                            <li><strong>Slow Symptom Triage:</strong> Delays in directing critical patients to specialists.</li>
+                            <li><strong>Heavy Database Strain:</strong> Constant doctor queries saturate disk I/O.</li>
+                            <li><strong>Security Gaps:</strong> Inconsistent authentication across internal APIs.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="color: var(--teal-light);">Engineered Solutions</div>
+                    <div class="card-body">
+                        <ul>
+                            <li><strong>Decoupled Microservices:</strong> Independent Auth, Patient, and Doctor domains.</li>
+                            <li><strong>Spring AI Symptom Triage:</strong> Automated severity scoring and department mapping.</li>
+                            <li><strong>Redis In-Memory Cache:</strong> Sub-2ms doctor catalog lookups.</li>
+                            <li><strong>Central Gateway Filter:</strong> Zero-trust Bearer token validation at entry.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="color: var(--blue);">Key Deliverables</div>
+                    <div class="card-body">
+                        <ul>
+                            <li><strong>High Availability:</strong> Eureka client-side load balancing.</li>
+                            <li><strong>Dual PostgreSQL DBs:</strong> patient_db and doctor_db schemas.</li>
+                            <li><strong>Eclipse & STS Native:</strong> Maven multi-module ready for 1-click import.</li>
+                            <li><strong>Full Containerization:</strong> One-command launch with docker-compose.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: System Topology -->
+        <div class="slide">
+            <div class="slide-tag">High Level Architecture</div>
+            <h2 class="slide-title">System Architecture Topology</h2>
+            <div class="slide-divider"></div>
+            <div class="topology-container">
+                <div class="topo-box highlight" style="max-width: 600px;">
+                    <strong>CLIENT TIER:</strong> Web Browser / Mobile App / Postman (HTTP/REST)
+                </div>
+                <div style="color: var(--teal-light); font-size: 1.5rem;">↓</div>
+                <div class="topo-box teal" style="max-width: 850px;">
+                    <strong>SPRING CLOUD API GATEWAY (Port 8080)</strong><br>
+                    <span style="font-size: 0.85rem; color: var(--text-muted);">
+                        JwtAuthenticationFilter • CORS Handling • Route Locator • Spring Cloud LoadBalancer
+                    </span>
+                </div>
+                <div style="display: flex; justify-content: center; gap: 3rem; width: 100%;">
+                    <div class="topo-box" style="flex: 1; border-color: var(--amber);">
+                        <strong style="color: var(--amber);">SERVICE REGISTRY</strong><br>
+                        Eureka Server : 8761<br>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">Heartbeats & Discovery</span>
+                    </div>
+                    <div class="topo-box" style="flex: 1; border-color: var(--teal-light);">
+                        <strong style="color: var(--teal-light);">AUTH SERVICE</strong><br>
+                        Port 8081<br>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">Spring Security 6 + JJWT</span>
+                    </div>
+                    <div class="topo-box purple" style="flex: 1;">
+                        <strong style="color: var(--purple);">PATIENT SERVICE</strong><br>
+                        Port 8082<br>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">Spring AI + Appointments</span>
+                    </div>
+                    <div class="topo-box" style="flex: 1; border-color: var(--blue);">
+                        <strong style="color: var(--blue);">DOCTOR SERVICE</strong><br>
+                        Port 8083<br>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">Specialties + Slots</span>
+                    </div>
+                </div>
+                <div class="topo-box" style="max-width: 850px; background: rgba(15, 23, 42, 0.9);">
+                    <strong>PERSISTENCE & CACHE TIER:</strong> 
+                    PostgreSQL 15 (<code style="color: #38bdf8;">patient_db</code>, <code style="color: #38bdf8;">doctor_db</code> on port 5432) 
+                    & Redis 7 (<code style="color: #f43f5e;">port 6379</code>)
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: Eureka Discovery -->
+        <div class="slide">
+            <div class="slide-tag">Discovery & Elastic Scaling</div>
+            <h2 class="slide-title">Netflix Eureka & Load Balancing</h2>
+            <div class="slide-divider"></div>
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header" style="color: var(--amber);">Netflix Eureka Server (Port 8761)</div>
+                    <div class="card-body">
+                        <ul>
+                            <li><strong>Dynamic Service Registration:</strong> Microservices register themselves upon boot with their logical names (e.g., <code>PATIENT-SERVICE</code>, <code>DOCTOR-SERVICE</code>).</li>
+                            <li><strong>Continuous Heartbeat Healthchecks:</strong> Sent every 30 seconds; unviable instances are purged automatically.</li>
+                            <li><strong>Dashboard Monitoring:</strong> Live graphical console at <code>http://localhost:8761</code> displaying instance IPs, ports, and status.</li>
+                            <li><strong>No Hardcoded Hosts:</strong> Decouples internal container networking from host machines.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="color: var(--blue);">Spring Cloud LoadBalancer</div>
+                    <div class="card-body">
+                        <ul>
+                            <li><strong>Gateway Load Balancing:</strong> Route URIs use the <code>lb://</code> protocol (e.g., <code>lb://doctor-service</code>) to distribute incoming requests across replicas.</li>
+                            <li><strong>Inter-Service Communication:</strong> Patient Service utilizes a <code>@LoadBalanced RestTemplate</code> to invoke <code>http://doctor-service/api/doctors/department/{dept}</code>.</li>
+                            <li><strong>Zero Edge Latency:</strong> Traffic flows directly between microservices within the internal network.</li>
+                            <li><strong>Fault Tolerant:</strong> Retries alternate instances when an endpoint fails.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: API Gateway -->
+        <div class="slide">
+            <div class="slide-tag">Edge Security & Routing</div>
+            <h2 class="slide-title">Spring Cloud API Gateway & Filter</h2>
+            <div class="slide-divider"></div>
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header" style="color: var(--teal-light);">Gateway Routes & Whitelisting</div>
+                    <div class="card-body">
+                        <pre>
+# Gateway Route Table
+/api/auth/**      -> lb://auth-service     (PUBLIC)
+/api/patients/**  -> lb://patient-service  (PROTECTED)
+/api/doctors/**   -> lb://doctor-service   (PROTECTED)
+
+# Whitelisted Endpoints (RouteValidator)
+• /api/auth/register
+• /api/auth/login
+• /api/auth/validate
+• /actuator/**</pre>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="color: var(--purple);">JwtAuthenticationFilter Logic</div>
+                    <div class="card-body">
+                        <ul>
+                            <li><strong>Path Inspection:</strong> If requested path is in the whitelist, skips validation and allows request through.</li>
+                            <li><strong>Token Extraction:</strong> Extracts <code>Bearer &lt;token&gt;</code> from the <code>Authorization</code> header. Returns 401 if missing.</li>
+                            <li><strong>Cryptographic Verification:</strong> Validates HMAC-SHA256 signature and expiration timestamp with the shared 256-bit secret.</li>
+                            <li><strong>Header Mutation:</strong> Injects <code>X-Auth-Username</code> and <code>X-Auth-Role</code> into request headers for downstream microservices.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: Spring Security & JWT -->
+        <div class="slide">
+            <div class="slide-tag">Identity & Access Management</div>
+            <h2 class="slide-title">Spring Security 6 & JJWT Tokens</h2>
+            <div class="slide-divider"></div>
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header" style="color: var(--amber);">Token Generation & Claims</div>
+                    <div class="card-body">
+                        <pre>
+// JWT Structure (io.jsonwebtoken:jjwt-api:0.12.5)
+Header:    {"alg": "HS256", "typ": "JWT"}
+Payload:   {
+  "sub": "patient_john",
+  "role": "ROLE_PATIENT",
+  "iat": 1773054000,
+  "exp": 1773140400 // 24 Hours TTL
+}
+Signature: HMACSHA256(Base64URL(Header) + "." + 
+                      Base64URL(Payload), secretKey)</pre>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="color: var(--green);">Security Capabilities</div>
+                    <div class="card-body">
+                        <ul>
+                            <li><strong>BCrypt Salting & Hashing:</strong> Passwords stored as one-way BCrypt hashes; plaintext is never retained.</li>
+                            <li><strong>Role-Based Access Control (RBAC):</strong> Separates patient operations from clinician schedule modifications (<code>ROLE_PATIENT</code>, <code>ROLE_DOCTOR</code>, <code>ROLE_ADMIN</code>).</li>
+                            <li><strong>Stateless Architecture:</strong> Zero server-side session locks; microservices scale horizontally without session replication.</li>
+                            <li><strong>Token Validation Endpoint:</strong> Dedicated <code>/api/auth/validate?token=...</code> for microservice verification.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: Spring AI Triage -->
+        <div class="slide">
+            <div class="slide-tag">Artificial Intelligence</div>
+            <h2 class="slide-title">Spring AI Symptom Triage Engine</h2>
+            <div class="slide-divider"></div>
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header" style="color: var(--purple);">Clinical Diagnostic Workflow</div>
+                    <div class="card-body">
+                        <ul>
+                            <li><strong>Natural Language Symptoms:</strong> Accepts descriptions like <em>"severe chest pain radiating to left arm"</em> or <em>"skin rash and itching"</em>.</li>
+                            <li><strong>Urgency Stratification:</strong> Maps conditions into 4 clinical tiers: <strong>EMERGENCY</strong>, <strong>HIGH</strong>, <strong>MODERATE</strong>, <strong>LOW</strong>.</li>
+                            <li><strong>Automated Department Referral:</strong> Directs patients to Cardiology, Neurology, Dermatology, Orthopedics, or General Medicine.</li>
+                            <li><strong>Care & Diagnostic Advice:</strong> Prescribes immediate precautions (e.g. R.I.C.E protocol) and suggested diagnostic tests (ECG, Troponin, MRI).</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="color: var(--teal-light);">Live Doctor Matching & Fallback</div>
+                    <div class="card-body">
+                        <ul>
+                            <li><strong>Automated Doctor Lookup:</strong> Triage service triggers inter-service query to <code>doctor-service</code> and returns top-rated matching doctors with open booking slots!</li>
+                            <li><strong>Zero-Failure Offline Engine:</strong> Works with Spring AI OpenAI / Ollama if keys are present, and seamlessly activates the built-in clinical rule base offline when keys are omitted!</li>
+                            <li><strong>Structured JSON Response:</strong> Returns diagnostic hypothesis, urgency tier, precautions, and suggested specialist profiles in a single call.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: Redis Caching -->
+        <div class="slide">
+            <div class="slide-tag">Caching & Performance</div>
+            <h2 class="slide-title">Distributed Redis Caching Strategy</h2>
+            <div class="slide-divider"></div>
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header" style="color: var(--rose);">Cache-Aside Architecture</div>
+                    <div class="card-body">
+                        <ul>
+                            <li><strong>Spring Cache Abstraction:</strong> <code>@EnableCaching</code> with <code>@Cacheable(value = "doctors")</code> intercepts queries.</li>
+                            <li><strong>Performance Gain:</strong> Database queries take ~50-80ms; Redis in-memory hits take &lt; 2ms (<strong>97% latency reduction</strong>).</li>
+                            <li><strong>TTL Expiration:</strong> Keys expire automatically in 15 minutes to guarantee fresh information.</li>
+                            <li><strong>JSON Serializer:</strong> <code>GenericJackson2JsonRedisSerializer</code> ensures cache values are stored as readable JSON strings.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="color: var(--amber);">Eviction & Resilient Error Handling</div>
+                    <div class="card-body">
+                        <ul>
+                            <li><strong>Automatic Invalidation:</strong> <code>@CacheEvict(allEntries = true)</code> automatically invalidates stale entries whenever doctor details or availability change.</li>
+                            <li><strong>Resilient CacheErrorHandler:</strong> Custom error handler catches Redis connectivity timeouts. If Redis is offline, queries fall back seamlessly to PostgreSQL without crashing!</li>
+                            <li><strong>Namespace Isolation:</strong> Distinct prefixes (<code>doctors::</code>, <code>patients::</code>) prevent cross-service key collisions.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 9: Database Schemas -->
+        <div class="slide">
+            <div class="slide-tag">PostgreSQL Dual-Database</div>
+            <h2 class="slide-title">Database Schemas: patient_db & doctor_db</h2>
+            <div class="slide-divider"></div>
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header" style="color: var(--teal-light);">patient_db (Port 5432)</div>
+                    <div class="card-body">
+                        <pre>
+TABLE patients (
+  id BIGSERIAL PRIMARY KEY,
+  first_name VARCHAR(255) NOT NULL,
+  last_name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  phone VARCHAR(50), age INT, gender VARCHAR(20),
+  blood_group VARCHAR(10), address TEXT,
+  emergency_contact VARCHAR(50),
+  medical_history TEXT
+);
+
+TABLE appointments (
+  id BIGSERIAL PRIMARY KEY,
+  patient_id BIGINT REFERENCES patients(id),
+  doctor_id BIGINT, doctor_name VARCHAR(255),
+  department VARCHAR(100), appointment_date DATE,
+  time_slot VARCHAR(50), status VARCHAR(50),
+  symptoms TEXT, notes TEXT
+);</pre>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="color: var(--blue);">doctor_db (Port 5432)</div>
+                    <div class="card-body">
+                        <pre>
+TABLE doctors (
+  id BIGSERIAL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  department VARCHAR(100) NOT NULL,
+  specialization VARCHAR(255) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  phone VARCHAR(50), consultation_fee FLOAT8,
+  rating FLOAT8, experience_years INT,
+  is_available BOOLEAN DEFAULT TRUE
+);
+
+TABLE availability_slots (
+  id BIGSERIAL PRIMARY KEY,
+  doctor_id BIGINT REFERENCES doctors(id),
+  day_of_week VARCHAR(20) NOT NULL,
+  start_time VARCHAR(20), end_time VARCHAR(20),
+  is_booked BOOLEAN DEFAULT FALSE
+);</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 10: Patient Activity Diagram -->
+        <div class="slide">
+            <div class="slide-tag">UML Working Activity Diagram</div>
+            <h2 class="slide-title">Patient Triage & Appointment Booking Flow</h2>
+            <div class="slide-divider"></div>
+            <div class="grid-4">
+                <div class="card">
+                    <div class="card-header" style="font-size: 1rem; color: var(--teal-light);">1. Authenticate</div>
+                    <div class="card-body" style="font-size: 0.85rem;">
+                        Patient registers or logs in via <code>/api/auth/login</code> and acquires signed JWT Bearer token.
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="font-size: 1rem; color: var(--blue);">2. Submit Symptoms</div>
+                    <div class="card-body" style="font-size: 0.85rem;">
+                        Submits natural symptoms to <code>/api/patients/ai/symptom-triage</code> with duration and history.
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="font-size: 1rem; color: var(--purple);">3. AI Evaluation</div>
+                    <div class="card-body" style="font-size: 0.85rem;">
+                        Spring AI scores urgency (Emergency/High/Mod), deduces department, precautions, and lab tests.
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="font-size: 1rem; color: var(--green);">4. Doctor Referral</div>
+                    <div class="card-body" style="font-size: 0.85rem;">
+                        Inter-service call to Doctor Service returns matching clinicians with available open slots.
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="font-size: 1rem; color: var(--amber);">5. Select Slot</div>
+                    <div class="card-body" style="font-size: 0.85rem;">
+                        Patient chooses preferred doctor and booking slot for consultation.
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="font-size: 1rem; color: var(--teal-light);">6. Book Appointment</div>
+                    <div class="card-body" style="font-size: 0.85rem;">
+                        Submits booking request to <code>/api/patients/{id}/appointments</code> with symptoms and notes.
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="font-size: 1rem; color: var(--rose);">7. Redis & DB Sync</div>
+                    <div class="card-body" style="font-size: 0.85rem;">
+                        Appointment written to <code>patient_db</code>, slot locked in <code>doctor_db</code>, cache refreshed.
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="font-size: 1rem; color: var(--green);">8. Confirmed</div>
+                    <div class="card-body" style="font-size: 0.85rem;">
+                        Returns appointment confirmation ID and instructions to the patient.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 11: Doctor Activity Diagram -->
+        <div class="slide">
+            <div class="slide-tag">UML Working Activity Diagram</div>
+            <h2 class="slide-title">Doctor Onboarding & Schedule Management</h2>
+            <div class="slide-divider"></div>
+            <div class="grid-4">
+                <div class="card">
+                    <div class="card-header" style="font-size: 1rem; color: var(--blue);">1. Onboard Doctor</div>
+                    <div class="card-body" style="font-size: 0.85rem;">
+                        Admin registers credentials with <code>ROLE_DOCTOR</code> in <code>auth-service</code>.
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="font-size: 1rem; color: var(--teal-light);">2. Ingest Profile</div>
+                    <div class="card-body" style="font-size: 0.85rem;">
+                        Doctor record saved in <code>doctor_db</code> with specialty, department, and consultation fees.
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="font-size: 1rem; color: var(--purple);">3. Configure Slots</div>
+                    <div class="card-body" style="font-size: 0.85rem;">
+                        Doctor specifies consultation slots (Day of week, Start & End times).
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="font-size: 1rem; color: var(--rose);">4. Redis Invalidation</div>
+                    <div class="card-body" style="font-size: 0.85rem;">
+                        <code>@CacheEvict</code> purges outdated doctor lists so new slots reflect instantly.
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="font-size: 1rem; color: var(--amber);">5. Patient Search</div>
+                    <div class="card-body" style="font-size: 0.85rem;">
+                        Patients browse doctors by department or specialization through API Gateway.
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="font-size: 1rem; color: var(--teal-light);">6. Slot Lock</div>
+                    <div class="card-body" style="font-size: 0.85rem;">
+                        Booking toggles <code>is_booked = true</code> to prevent double booking.
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="font-size: 1rem; color: var(--blue);">7. Consultation</div>
+                    <div class="card-body" style="font-size: 0.85rem;">
+                        Doctor conducts medical consultation and records clinical notes.
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="font-size: 1rem; color: var(--green);">8. Completed</div>
+                    <div class="card-body" style="font-size: 0.85rem;">
+                        Appointment marked <code>COMPLETED</code> in PostgreSQL database.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 12: Sequence Diagram -->
+        <div class="slide">
+            <div class="slide-tag">Sequence Diagram</div>
+            <h2 class="slide-title">End-to-End API Request Flow</h2>
+            <div class="slide-divider"></div>
+            <div class="card">
+                <div class="card-body">
+                    <pre style="font-size: 0.9rem; color: #a5f3fc; line-height: 1.6;">
+[ Client ]          [ API Gateway ]       [ Auth Service ]       [ Patient Service ]    [ Doctor Service ]
+    │                      │                     │                       │                      │
+    │── 1. POST /login ───▶│─── 2. Forward ─────▶│                       │                      │
+    │                      │                     │── 3. Validate & Sign ─│                      │
+    │◀─ 4. Return JWT ─────│◀── Bearer Token ────│                       │                      │
+    │                      │                     │                       │                      │
+    │── 5. POST /triage ──▶│                     │                       │                      │
+    │      (with JWT)      │── 6. Verify Token   │                       │                      │
+    │                      │── 7. Forward ──────────────────────────────▶│                      │
+    │                      │      (with X-Auth-Headers)                  │── 8. AI Analysis     │
+    │                      │                     │                       │── 9. GET /dept/Cardio ─────▶│
+    │                      │                     │                       │◀── Matching Doctors ────────│
+    │◀─ 10. Triage Result ─│◀─── Response ───────────────────────────────│                      │
+    │                      │                     │                       │                      │</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 13: Test Case Matrix -->
+        <div class="slide">
+            <div class="slide-tag">Quality Assurance</div>
+            <h2 class="slide-title">Microservices Test Case Matrix</h2>
+            <div class="slide-divider"></div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Test ID</th>
+                        <th>Component</th>
+                        <th>Test Scenario</th>
+                        <th>Expected Outcome</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>TC-AUTH-01</code></td>
+                        <td>Auth Service</td>
+                        <td>Register new user with valid username & password</td>
+                        <td>HTTP 201 Created, returns signed JWT & ROLE_PATIENT</td>
+                        <td><span class="status-pass">✔ PASSED</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>TC-AUTH-02</code></td>
+                        <td>Auth Service</td>
+                        <td>Login with invalid password</td>
+                        <td>HTTP 401 Unauthorized with error message</td>
+                        <td><span class="status-pass">✔ PASSED</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>TC-GW-01</code></td>
+                        <td>API Gateway</td>
+                        <td>Access /api/patients without Authorization header</td>
+                        <td>HTTP 401 Missing Authorization Header</td>
+                        <td><span class="status-pass">✔ PASSED</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>TC-GW-02</code></td>
+                        <td>API Gateway</td>
+                        <td>Access /api/doctors with valid Bearer JWT</td>
+                        <td>HTTP 200 OK, request routed with injected headers</td>
+                        <td><span class="status-pass">✔ PASSED</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>TC-AI-01</code></td>
+                        <td>Patient Service (AI)</td>
+                        <td>Submit severe chest pain symptoms for triage</td>
+                        <td>Urgency: EMERGENCY, Dept: Cardiology, ECG test suggested</td>
+                        <td><span class="status-pass">✔ PASSED</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>TC-CACHE-01</code></td>
+                        <td>Doctor Service (Redis)</td>
+                        <td>Query /api/doctors twice in succession</td>
+                        <td>1st call queries PostgreSQL; 2nd call hits Redis (&lt;5ms)</td>
+                        <td><span class="status-pass">✔ PASSED</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SLIDE 14: Docker Deployment -->
+        <div class="slide">
+            <div class="slide-tag">DevOps & Orchestration</div>
+            <h2 class="slide-title">Docker Multi-Container Orchestration</h2>
+            <div class="slide-divider"></div>
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header" style="color: var(--blue);">Container Architecture</div>
+                    <div class="card-body">
+                        <ul>
+                            <li><strong>postgres:15-alpine:</strong> Boots up PostgreSQL with auto-initialization script for <code>patient_db</code> and <code>doctor_db</code>.</li>
+                            <li><strong>redis:7-alpine:</strong> Distributed cache container on port 6379 with automatic healthcheck.</li>
+                            <li><strong>service-registry:</strong> Eureka Server container on port 8761.</li>
+                            <li><strong>api-gateway:</strong> Edge reverse-proxy container on port 8080.</li>
+                            <li><strong>auth, patient, doctor services:</strong> Alpine JRE microservice containers connected via bridge network <code>hospital-net</code>.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="color: var(--teal-light);">Docker CLI Execution</div>
+                    <div class="card-body">
+                        <pre>
+# 1. Build and start all 7 containers in background
+docker-compose up --build -d
+
+# 2. Verify all services are healthy and running
+docker-compose ps
+
+# 3. Stream real-time logs from patient service
+docker-compose logs -f patient-service
+
+# 4. Scale Patient Service to handle high loads
+docker-compose up --scale patient-service=3 -d
+
+# 5. Stop and clean up containers
+docker-compose down -v</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 15: Eclipse Guide -->
+        <div class="slide">
+            <div class="slide-tag">Developer Setup</div>
+            <h2 class="slide-title">Eclipse IDE & Spring Tool Suite Guide</h2>
+            <div class="slide-divider"></div>
+            <div class="grid-3">
+                <div class="card">
+                    <div class="card-header" style="color: var(--teal-light);">1. Import Project</div>
+                    <div class="card-body">
+                        <ul>
+                            <li>Open Eclipse / STS.</li>
+                            <li>Go to <code>File</code> → <code>Import...</code></li>
+                            <li>Select <code>Maven</code> → <code>Existing Maven Projects</code>.</li>
+                            <li>Browse to project root folder and click <strong>Finish</strong>.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="color: var(--blue);">2. Launch Order</div>
+                    <div class="card-body">
+                        <ul>
+                            <li>1st: <code>ServiceRegistryApplication</code> (8761)</li>
+                            <li>2nd: <code>AuthServiceApplication</code> (8081)</li>
+                            <li>3rd: <code>DoctorServiceApplication</code> (8083)</li>
+                            <li>4th: <code>PatientServiceApplication</code> (8082)</li>
+                            <li>5th: <code>ApiGatewayApplication</code> (8080)</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="color: var(--green);">3. Run As Spring Boot</div>
+                    <div class="card-body">
+                        <ul>
+                            <li>Right-click each Application class → <strong>Run As</strong> → <strong>Spring Boot App</strong> (or Java Application).</li>
+                            <li>Open <code>http://localhost:8761</code> to see all 4 services registered in Eureka!</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 16: Conclusion -->
+        <div class="slide">
+            <div class="slide-tag">Summary & Next Steps</div>
+            <h2 class="slide-title">Conclusion & Future Enhancements</h2>
+            <div class="slide-divider"></div>
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header" style="color: var(--teal-light);">Architecture Accomplishments</div>
+                    <div class="card-body">
+                        <ul>
+                            <li>✔ <strong>Decoupled Microservices:</strong> Scalable, independent services conforming to 12-Factor principles.</li>
+                            <li>✔ <strong>Spring AI Healthcare Integration:</strong> Automated clinical symptom triage and specialist matching.</li>
+                            <li>✔ <strong>Redis Performance Tier:</strong> Low sub-millisecond read latency with automatic cache eviction.</li>
+                            <li>✔ <strong>Zero-Trust Gateway Security:</strong> Centralized JJWT verification and role-based header forwarding.</li>
+                            <li>✔ <strong>Resilient Offline Fallback:</strong> Operates seamlessly with local PostgreSQL and built-in medical rule bases.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="color: var(--blue);">Future Roadmap</div>
+                    <div class="card-body">
+                        <ul>
+                            <li><strong>Kafka Event Bus:</strong> Real-time appointment notification publishing to Kafka topics.</li>
+                            <li><strong>OpenTelemetry Tracing:</strong> Distributed span tracking across Gateway and microservices.</li>
+                            <li><strong>Kubernetes Deployment:</strong> Helm charts with Horizontal Pod Autoscalers (HPA).</li>
+                            <li><strong>HL7 / FHIR Standards:</strong> Clinical data interoperability with hospital electronic health systems.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <div>Hospital Management Microservices Platform • Spring Boot 3 & Spring AI</div>
+        <div>Press <kbd>◀</kbd> / <kbd>▶</kbd> or Spacebar to navigate slides</div>
+    </footer>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const counter = document.getElementById('slide-counter');
+
+        function showSlide(index) {
+            if (index < 0) index = 0;
+            if (index >= slides.length) index = slides.length - 1;
+            
+            slides[currentSlide].classList.remove('active');
+            currentSlide = index;
+            slides[currentSlide].classList.add('active');
+            
+            counter.textContent = `Slide ${currentSlide + 1} / ${slides.length}`;
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function prevSlide() {
+            showSlide(currentSlide - 1);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>
